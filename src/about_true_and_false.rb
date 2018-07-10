@@ -29,5 +29,4 @@ class AboutTrueAndFalse < Neo::Koan
     assert_equal __(:true_stuff), truth_value("Strings")
     assert_equal __(:true_stuff), truth_value("")
   end
-
 end
