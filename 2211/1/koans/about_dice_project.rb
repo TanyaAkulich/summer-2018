@@ -12,7 +12,8 @@ class DiceSet
   # :reek:UncommunicativeParameterName
   # rubocop: disable Naming/UncommunicativeMethodParamName
   def roll(n)
-    @values = Array.new(n) { rand(1..6) }  end
+    @values = Array.new(n) { rand(1..6) }
+  end
   # rubocop: enable Naming/UncommunicativeMethodParamName
 end
 
