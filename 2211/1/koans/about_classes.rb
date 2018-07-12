@@ -220,4 +220,3 @@ class AboutClasses < Neo::Koan
   end
   # rubocop: enable Style/StringLiterals
 end
-
