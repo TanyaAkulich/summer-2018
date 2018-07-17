@@ -6,6 +6,7 @@ require_relative 'MemberControl'
 require_relative 'WordsNumber'
 require_relative 'WordControl'
 
+# 1st task
 class TopBadWords < MemberControl
   def initialize(number)
     foul_language(number)
@@ -26,78 +27,90 @@ class TopBadWords < MemberControl
   end
 end
 
+# Added info about existed member
 class FillMembersInfo < WordsNumber
   def add_info(member, file)
     member[:battles] += 1
     member[:rounds] += 1
-    find_bad_words(member, file)
-    battle_analysis(member, file)
+    FindBadWords.new(member, file)
+    battle_analysis(member, file, [])
   end
 
-  def find_bad_words(member, file)
-    Dir.chdir('versus-battle')
-    IO.foreach(file) do |line|
-      temp = RussianObscenity.find(line)
-      member[:bad_words] += temp.size
-      member[:bad_words] += 1 if /[\*]/ =~ line
-    end
-  end
-
-  def battle_analysis(member, file)
-    word_per_battle = []
+  def battle_analysis(member, file, word_per_battle)
     Dir.chdir('..')
-    fill_array(file, word_per_battle)
+    ArrayFiller.new(file, word_per_battle)
     word_per_battle.flatten!
     words_number_in_battle(member, word_per_battle)
     words_number_in_rounds(member, word_per_battle)
   end
 end
 
-def sort_result(arr, attr)
-  arr.sort_by! { |key| key[attr] * -1 }
-end
-
-def search_in_array(name, arr, attr)
-  arr.detect { |mem| mem[attr] == name }
-end
-
-class TopWords < WordControl
-  def initialize(name, number = 30)
-    favourite_words(name, number)
+# Find Bad words for this member
+class FindBadWords
+  def initialize(name, file)
+    @word = name
+    find(file)
   end
 
-  def favourite_words(name, number)
-    @words = []
-    member_exist(name)
-    result(name, number)
-  end
-
-  def result(name, number)
-    sorted = words_sort([], @words)
-    out = Output.new
-    out.second_result_output(number, sorted) unless @words.empty?
-    out.output_all_members(name) if @words.empty?
-  end
-
-  def member_exist(name)
-    Dir.foreach('versus-battle') do |file|
-      for_delete = file[/\s{1}(против|vs|VS){1}\s{1}.+\z/]
-      member_name = file.chomp(for_delete)
-      word_analysis(file, []) if name == member_name[1..-1]
+  def find(file)
+    Dir.chdir('versus-battle')
+    IO.foreach(file) do |line|
+      temp = RussianObscenity.find(line)
+      @word[:bad_words] += temp.size
+      @word[:bad_words] += 1 if /[\*]/ =~ line
     end
   end
 end
 
-def search_in_words_array(word, arr)
-  arr.detect { |mem| mem[word.to_sym] }
+# Sort result array
+class ResultSorter
+  def initialize(arr, attr)
+    @words = arr
+    sort_result(attr)
+  end
+
+  def sort_result(attr)
+    @words.sort_by! { |key| key[attr] * -1 }
+  end
 end
 
-def words_sort(arr_sort, arr_beg)
-  arr_beg.each { |elem| arr_sort << elem.to_a }
-  arr_sort.flatten!(1)
-  arr_sort.sort! { |first, second| (first[1] <=> second[1]) * -1 }
+# 2nd task
+class TopWords < WordControl
+  def initialize(name, number = 30)
+    @name = name
+    @number = number
+    favourite_words
+  end
+
+  def favourite_words
+    @words = []
+    member_exist
+    result
+  end
+
+  def result
+    sorted = words_sort([])
+    out = Output.new
+    out.second_result_output(@number, sorted) unless @words.empty?
+    out.output_all_members(@name) if @words.empty?
+  end
+
+  def words_sort(arr_sort)
+    @words.each { |elem| arr_sort << elem.to_a }
+    arr_sort.flatten!(1)
+    arr_sort.sort! { |first, second| (first[1] <=> second[1]) * -1 }
+  end
+
+  def member_exist
+    Dir.foreach('versus-battle') do |file|
+      for_delete = file[/\s{1}(против|vs|VS){1}\s{1}.+\z/]
+      member_name = file.chomp(for_delete)
+      word_analysis(file, []) if @name == member_name[1..-1]
+    end
+  end
 end
 
+# For pterry output ^__^
 class Output
   def first_result_output(member)
     printf('%-25s ', member[:name])
@@ -128,6 +141,7 @@ class Output
   end
 end
 
+# Read params
 class Parser
   def initialize
     doc = %{
@@ -148,27 +162,44 @@ class Parser
 
   def call_doc(doc)
     begin
-      args = Docopt.docopt(doc)
+      @args = Docopt.docopt(doc)
     rescue Docopt::Exit => exp
       puts exp.message
       exit
     end
-    call_method(args)
+    call_method
   end
 
-  def call_method(args)
-    TopBadWords.new(args['--top-bad-words'].to_s) if args['--top-bad-words']
-    TopWords.new(args['--name'].to_s, args['--top-words'].to_s) if args['--top-words']
-    TopWords.new(args['--name'].to_s) if args['--name'] && !args['--top-words']
+  def call_method
+    call_first_task if @args['--top-bad-words']
+    call_second_task if @args['--top-words'] || (@args['--name'] && !@args['--top-words'])
+  end
+
+  def call_first_task
+    TopBadWords.new(@args['--top-bad-words'].to_s)
+  end
+
+  def call_second_task
+    TopWords.new(@args['--name'].to_s, @args['--top-words'].to_s) if @args['--top-words']
+    TopWords.new(@args['--name'].to_s) if @args['--name'] && !@args['--top-words']
   end
 end
 
-def fill_array(file, words_array)
-Dir.chdir('versus-battle')
-  IO.foreach(file) do |line|
-    words_array << line.scan(/[А-яёA-z\d]+[^\s,\.\-\?\!]*/i)
+# Make dictionary
+class ArrayFiller
+  def initialize(file, words_array)
+    @file = file
+    @words = words_array
+    fill_array
   end
-Dir.chdir('..')
+
+  def fill_array
+    Dir.chdir('versus-battle')
+    IO.foreach(@file) do |line|
+      @words << line.scan(/[А-яёA-z\d]+[^\s,\.\-\?\!]*/i)
+    end
+    Dir.chdir('..')
+  end
 end
 
 Parser.new

@@ -1,21 +1,23 @@
 class WordControl
   attr_accessor :words
 
-  def word_analysis(file, words_array)
-    fill_array(file, words_array)
-    words_array_pretty_view(words_array)
-    words_often(words_array)
+  def word_analysis(file, dictionary)
+    @file = file
+    @dictionary = dictionary
+    ArrayFiller.new(@file, @dictionary)
+    words_array_pretty_view
+    words_often
   end
 
-  def words_array_pretty_view(array)
-    array.flatten!
-    array.map(&:downcase!)
+  def words_array_pretty_view
+    @dictionary.flatten!
+    @dictionary.map(&:downcase!)
   end
 
-  def words_often(arr)
-    arr.each do |word|
-      new_word(word) unless search_in_words_array(word, @words)
-      temp = @words.index(search_in_words_array(word, @words))
+  def words_often
+    @dictionary.each do |word|
+      new_word(word) unless search_in_words_array(word)
+      temp = @words.index(search_in_words_array(word))
       @words[temp][word.to_sym] += 1
     end
   end
@@ -25,4 +27,8 @@ class WordControl
     new_word[word.to_sym] = 0
     @words << new_word
   end
-end 
+
+  def search_in_words_array(word)
+    @words.detect { |mem| mem[word.to_sym] }
+  end
+end
