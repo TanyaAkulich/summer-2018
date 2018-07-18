@@ -1,10 +1,13 @@
+# calculates the number of word repetitions
 class WordControl
-  attr_accessor :words
+  def initialize
+    @words = []
+    @dictionary = []
+  end
 
   def word_analysis(file, dictionary)
-    @file = file
     @dictionary = dictionary
-    ArrayFiller.new(@file, @dictionary)
+    ArrayFiller.new(file, @dictionary)
     words_array_pretty_view
     words_often
   end
