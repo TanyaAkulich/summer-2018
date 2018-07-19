@@ -1,8 +1,11 @@
 # calculates the number of word repetitions
 class WordControl
-  def initialize
+  def initialize(name, number)
     @words = []
     @dictionary = []
+    @name = name
+    @number = number
+    @number = 30 unless number
   end
 
   def word_analysis(file, dictionary)

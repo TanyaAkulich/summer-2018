@@ -5,14 +5,12 @@ class TopWords < WordControl
   attr_reader :words
   attr_reader :name
   attr_reader :number
-  def initialize
+  def initialize(name, number)
     super
     @sorted = []
   end
 
-  def favourite_words(name, number = 30)
-    @name = name
-    @number = number
+  def favourite_words
     member_exist
     result
   end

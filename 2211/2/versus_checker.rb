@@ -69,36 +69,30 @@ class Parser
   end
 
   def parse_and_run_task
-    doc
-    args
-    call_method
+    find_all_bad_words if arguments_for_top_bad_words_present?
+    find_favourite_battlers_words if arguments_for_top_words_present?
+    find_favourite_battlers_words if arguments_for_name_present? && !arguments_for_top_words_present?
   end
 
-  def call_method
-    call_first_task if args['--top-bad-words']
-    call_second_task if args['--top-words'] || (args['--name'] && !args['--top-words'])
+  def arguments_for_top_bad_words_present?
+    args['--top-bad-words']
   end
 
-  def call_first_task
-    TopBadWords.new.foul_language(args['--top-bad-words'].to_s)
+  def arguments_for_top_words_present?
+    args['--top-words']
   end
 
-  # def call_second_task
-  #   TopWords.new.favourite_words(args['--name'].to_s, args['--top-words'].to_s) if args['--top-words']
-  #   TopWords.new.favourite_words(args['--name'].to_s) if args['--name'] && !args['--top-words']
-  # end
-
-  def call_second_task
-    call_second_task_with_number if args['--top-words']
-    call_second_task_without_number if args['--name'] && !args['--top-words']
+  def arguments_for_name_present?
+    args['--name']
   end
 
-  def call_second_task_with_number
-    TopWords.new.favourite_words(args['--name'].to_s, args['--top-words'].to_s)
+  def find_all_bad_words
+    TopBadWords.new.foul_language(args['--top-bad-words'].to_i)
   end
 
-  def call_second_task_without_number
-    TopWords.new.favourite_words(args['--name'].to_s)
+  def find_favourite_battlers_words
+    puts args['--top-words']
+    TopWords.new(args['--name'].to_s, args['--top-words']).favourite_words
   end
 end
 

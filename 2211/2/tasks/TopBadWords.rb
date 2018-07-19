@@ -18,7 +18,7 @@ class TopBadWords < MemberControl
   end
 
   def result
-    number.to_i.times do |num|
+    number.times do |num|
       out = Output.new
       out.first_result_output(members[num])
       puts
