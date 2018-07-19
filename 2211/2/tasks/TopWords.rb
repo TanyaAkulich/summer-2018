@@ -1,4 +1,5 @@
 require_relative '../WordControl'
+require_relative '../AllMembersNames'
 
 # 2nd task
 class TopWords < WordControl
@@ -17,10 +18,8 @@ class TopWords < WordControl
 
   def result
     words_sort
-    call = WordsNumberOutput.new(number, @sorted)
-    call.words_number_output unless words.empty?
-    out = Output.new
-    out.output_all_members(name) if words.empty?
+    words_number_output(number) unless words.empty?
+    output_all_members(name) if words.empty?
   end
 
   def words_sort
@@ -36,19 +35,15 @@ class TopWords < WordControl
       word_analysis(file, []) if name == member_name[1..-1]
     end
   end
-end
 
-# 2nd task's output
-class WordsNumberOutput
-  def initialize(number, dictionary)
-    @number = number
-    @dictionary = dictionary
+  def words_number_output(number)
+    number.to_i.times do |num|
+      puts "#{@sorted[num][0]} - #{@sorted[num][1]} times"
+    end
   end
 
-  def words_number_output
-    out = Output.new
-    @number.to_i.times do |num|
-      out.second_result_output(@dictionary[num][0], @dictionary[num][1])
-    end
+  def output_all_members(name)
+    puts "Рэпер #{name} не известен мне. Зато мне известны:"
+    AllMembersNames.new.all_members_names
   end
 end

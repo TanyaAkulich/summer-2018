@@ -1,8 +1,10 @@
+require_relative 'FileReader'
+
 # calculates the number of word repetitions
 class WordControl
   def initialize(name, number)
-    @words = []
-    @dictionary = []
+    @words = [] # Array og hashes (word is a key, value - number of repetitions)
+    @dictionary = [] # Array of all words
     @name = name
     @number = number
     @number = 30 unless number
@@ -10,7 +12,7 @@ class WordControl
 
   def word_analysis(file, dictionary)
     @dictionary = dictionary
-    ArrayFiller.new(file, @dictionary)
+    FileReader.new(file, @dictionary)
     words_array_pretty_view
     words_often
   end

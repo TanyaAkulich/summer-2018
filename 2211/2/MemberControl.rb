@@ -1,9 +1,11 @@
+require_relative 'NewMember'
+require_relative 'FillMembersInfo'
+
 # member initializer
 class MemberControl
-  def initialize
-    @members = []
+  def initialize(array)
+    @members = array
     @member_name = ''
-    @member = {}
   end
 
   def find_members_name
@@ -16,27 +18,12 @@ class MemberControl
 
   def verification_of_existence(file_name)
     return @member_name if @member_name.include?('.') || @member_name.include?('..')
-    initialize_member unless search_in_array(:name)
-    temp = @members.index(search_in_array(:name))
-    FillMembersInfo.new(@members[temp], file_name).add_info
+    NewMember.new(@member_name, @members) unless search_in_array(:name)
+    index = @members.index(search_in_array(:name))
+    FillMembersInfo.new(@members[index], file_name).add_info
   end
 
   def search_in_array(attr)
     @members.detect { |mem| mem[attr] == @member_name }
-  end
-
-  def initialize_member
-    @member = {}
-    @member[:name] = @member_name
-    create_cases
-    @members << @member
-  end
-
-  def create_cases
-    @member[:battles] = 0
-    @member[:bad_words] = 0
-    @member[:avr_words] = 0
-    @member[:words_per_round] = 0
-    @member[:rounds] = 0
   end
 end

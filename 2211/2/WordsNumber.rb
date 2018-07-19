@@ -1,9 +1,8 @@
 # calculates the number of words per battle and per round
 class WordsNumber
   attr_reader :number
-  def initialize(member, file)
+  def initialize(member)
     @member = member
-    @file = file
   end
 
   def words_number_in_battle(words_array)
