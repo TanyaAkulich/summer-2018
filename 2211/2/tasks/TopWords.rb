@@ -1,39 +1,24 @@
-require_relative '../WordControl'
-require_relative '../AllMembersNames'
+require_relative '../TestForExistence'
+require_relative '../SortWords'
+require_relative '../TestForExistence'
 
 # 2nd task
-class TopWords < WordControl
-  attr_reader :words
-  attr_reader :name
-  attr_reader :number
+class TopWords
   def initialize(name, number)
-    super
+    @name = name
+    @number = number ? number : 30
+    @words = []
     @sorted = []
   end
 
   def favourite_words
-    member_exist
+    @words = TestForExistence.new(@name, @words).test
     result
   end
 
   def result
-    words_sort
-    words_number_output(number) unless words.empty?
-    output_all_members(name) if words.empty?
-  end
-
-  def words_sort
-    words.each { |elem| @sorted << elem.to_a }
-    @sorted.flatten!(1)
-    @sorted.sort! { |first, second| (first[1] <=> second[1]) * -1 }
-  end
-
-  def member_exist
-    Dir.foreach('versus-battle') do |file|
-      for_delete = file[/\s{1}(против|vs|VS){1}\s{1}.+\z/]
-      member_name = file.chomp(for_delete)
-      word_analysis(file, []) if name == member_name[1..-1]
-    end
+    @sorted = SortWords.new.words_sort(@words)
+    @words.empty? ? output_all_members(@name) : words_number_output(@number)
   end
 
   def words_number_output(number)
