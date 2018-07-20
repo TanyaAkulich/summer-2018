@@ -6,7 +6,7 @@ require_relative '../TestForExistence'
 class TopWords
   def initialize(name, number)
     @name = name
-    @number = number ? number : 30
+    @number = number || 30
     @words = []
     @sorted = []
   end

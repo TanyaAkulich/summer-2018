@@ -1,6 +1,7 @@
 require_relative 'FindBadWords'
 require_relative 'FileReader'
 require_relative 'WordsNumber'
+require_relative 'RoundsCounter'
 
 # Added info about existed member
 class FillMembersInfo
@@ -11,7 +12,8 @@ class FillMembersInfo
 
   def add_info
     @member[:battles] += 1
-    @member[:rounds] += 1
+    # @member[:rounds] += 1
+    RoundsCounter.new(@member, @file).file_read
     FindBadWords.new(@member, @file)
     words_number_in_battles_and_rounds([])
   end

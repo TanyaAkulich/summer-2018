@@ -3,7 +3,6 @@ class WordsNumber
   def initialize(member, words_array)
     @member = member
     @number = words_array.size
-    @member[:rounds] += 1 if words_array.include?('Раунд')
   end
 
   def words_number_in_battle
