@@ -4,6 +4,7 @@ require_relative '../TestForExistence'
 
 # 2nd task
 class TopWords
+  # :reek:ControlParameter
   def initialize(name, number)
     @name = name
     @number = number || 30
