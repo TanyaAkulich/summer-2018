@@ -10,9 +10,13 @@ class FindBadWords
   def find(file)
     Dir.chdir('versus-battle')
     IO.foreach(file) do |line|
-      temp = RussianObscenity.find(line)
-      @word[:bad_words] += temp.size
+      find_bad_words_with_russian_obscenity_gem(line)
       @word[:bad_words] += 1 if /[\*]/ =~ line
     end
+  end
+
+  def find_bad_words_with_russian_obscenity_gem(line)
+    temp = RussianObscenity.find(line)
+    @word[:bad_words] += temp.size
   end
 end

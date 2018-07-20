@@ -52,7 +52,6 @@ class Parser
   end
 
   def find_favourite_battlers_words
-    puts args['--top-words']
     TopWords.new(args['--name'].to_s, args['--top-words']).favourite_words
   end
 end

@@ -12,7 +12,7 @@ class WordControl
 
   def word_analysis(file, dictionary)
     @dictionary = dictionary
-    FileReader.new(file, @dictionary)
+    FileReader.new(file, @dictionary).fill_array
     words_array_pretty_view
     words_often
   end
