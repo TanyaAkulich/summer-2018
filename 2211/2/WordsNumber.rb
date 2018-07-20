@@ -1,21 +1,24 @@
 # calculates the number of words per battle and per round
 class WordsNumber
-  attr_reader :number
-  def initialize(member)
+  def initialize(member, words_array)
     @member = member
+    @number = words_array.size
+    @member[:rounds] += 1 if words_array.include?('Раунд')
   end
 
-  def words_number_in_battle(words_array)
-    number = words_array.size
-    @member[:avr_words] = number / @member[:battles] if @member[:avr_words].zero?
-    @member[:avr_words] = (number / @member[:battles] + @member[:avr_words]) / 2.0 unless @member[:avr_words].zero?
+  def words_number_in_battle
+    calculates(@member[:avr_words], @member[:battles])
   end
 
-  # rubocop: disable Metrics/LineLength
-  def words_number_in_rounds(words_array)
-    number = words_array.size
-    return @member[:words_per_round] = number / @member[:rounds] if @member[:words_per_round].zero?
-    return @member[:words_per_round] = (number / @member[:rounds] + @member[:words_per_round]) / 2.0 unless @member[:words_per_round].zero?
+  def words_number_in_rounds
+    calculates(@member[:words_per_round], @member[:rounds])
   end
-  # rubocop: enable Metrics/LineLength
+
+  def calculates(value, range)
+    value.zero? ? value_is_zero? : (@number / range + value) / 2.0
+  end
+
+  def value_is_zero?
+    @number / @member[:battles]
+  end
 end

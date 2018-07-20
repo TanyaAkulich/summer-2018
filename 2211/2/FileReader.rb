@@ -3,7 +3,6 @@ class FileReader
   def initialize(file, words_array)
     @file = file
     @words_from_file = words_array
-    fill_array
   end
 
   def fill_array

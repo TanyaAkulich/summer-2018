@@ -18,8 +18,8 @@ class FillMembersInfo
 
   def words_number_in_battles_and_rounds(word_per_battle)
     Dir.chdir('..')
-    FileReader.new(@file, word_per_battle)
-    WordsNumber.new(@member).words_number_in_battle(word_per_battle)
-    WordsNumber.new(@member).words_number_in_rounds(word_per_battle)
+    FileReader.new(@file, word_per_battle).fill_array
+    @member[:avr_words] = WordsNumber.new(@member, word_per_battle).words_number_in_battle
+    @member[:words_per_round] = WordsNumber.new(@member, word_per_battle).words_number_in_rounds
   end
 end

@@ -1,10 +1,6 @@
 require 'io/console'
 require 'optparse'
-require 'russian_obscenity/base'
 require 'docopt'
-require_relative 'MemberControl'
-require_relative 'WordsNumber'
-require_relative 'WordControl'
 require_relative 'tasks/TopBadWords'
 require_relative 'tasks/TopWords'
 
