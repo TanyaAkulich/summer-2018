@@ -17,6 +17,8 @@ class TopBadWords
     puts_top
   end
 
+  private
+
   def puts_top
     number.times do |num|
       PrintMembersDescription.new(members[num]).puts_line

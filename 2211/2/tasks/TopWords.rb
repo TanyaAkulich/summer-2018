@@ -18,6 +18,8 @@ class TopWords
     result
   end
 
+  private
+
   def result
     @sorted = SortWords.new.words_sort(@words)
     @words.empty? ? output_all_members(name) : words_number_output(number)
