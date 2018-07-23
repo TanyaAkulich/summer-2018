@@ -1,5 +1,6 @@
 # Make dictionary
 class FileReader
+  attr_reader :file
   def initialize(file, words_array)
     @file = file
     @words_from_file = words_array
@@ -7,7 +8,7 @@ class FileReader
 
   def fill_array
     Dir.chdir('versus-battle')
-    IO.foreach(@file) do |line|
+    IO.foreach(file) do |line|
       @words_from_file << line.scan(/[А-яёA-z\d]+[^\s,\.\-\?\!]*/i)
     end
     Dir.chdir('..')

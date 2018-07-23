@@ -1,5 +1,6 @@
 # countes battles number
 class RoundsCounter
+  attr_reader :file
   def initialize(member, file)
     @file = file
     @member = member
@@ -8,7 +9,7 @@ class RoundsCounter
 
   def file_read
     Dir.chdir('versus-battle')
-    IO.foreach(@file) { |line| @count += 1 if /^(Р|р)аунд \d/ =~ line }
+    IO.foreach(file) { |line| @count += 1 if /^(Р|р)аунд \d/ =~ line }
     Dir.chdir('..')
     find_rounds
   end

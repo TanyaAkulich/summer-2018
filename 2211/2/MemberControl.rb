@@ -19,7 +19,7 @@ class MemberControl
 
   def verification_of_existence(file_name)
     return @member_name if @member_name.include?('.') || @member_name.include?('..')
-    NewMember.new(@member_name, members) unless search_in_array(:name)
+    NewMember.new(@member_name, members).create_new_member_case
     index = find_index
     FillMembersInfo.new(members[index], file_name).add_info
   end
