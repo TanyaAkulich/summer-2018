@@ -1,5 +1,6 @@
 # calculates the number of words per battle and per round
 class WordsNumber
+  attr_reader :number
   def initialize(member, words_array)
     @member = member
     @number = words_array.size
@@ -14,10 +15,10 @@ class WordsNumber
   end
 
   def calculates(value, range)
-    value.zero? ? value_is_zero? : (@number / range + value) / 2.0
+    value.zero? ? value_is_zero? : (number / range + value) / 2.0
   end
 
   def value_is_zero?
-    @number / @member[:battles]
+    number / @member[:battles]
   end
 end

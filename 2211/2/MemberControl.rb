@@ -3,6 +3,7 @@ require_relative 'FillMembersInfo'
 
 # member initializer
 class MemberControl
+  attr_reader :members
   def initialize(array)
     @members = array
     @member_name = ''
@@ -18,16 +19,16 @@ class MemberControl
 
   def verification_of_existence(file_name)
     return @member_name if @member_name.include?('.') || @member_name.include?('..')
-    NewMember.new(@member_name, @members) unless search_in_array(:name)
+    NewMember.new(@member_name, members) unless search_in_array(:name)
     index = find_index
-    FillMembersInfo.new(@members[index], file_name).add_info
+    FillMembersInfo.new(members[index], file_name).add_info
   end
 
   def find_index
-    @members.index(search_in_array(:name))
+    members.index(search_in_array(:name))
   end
 
   def search_in_array(attr)
-    @members.detect { |mem| mem[attr] == @member_name }
+    members.detect { |mem| mem[attr] == @member_name }
   end
 end
