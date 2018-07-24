@@ -2,7 +2,7 @@ require 'io/console'
 require 'optparse'
 require 'docopt'
 require_relative 'tasks/TopBadWords'
-require_relative 'tasks/TopWords'
+# require_relative 'tasks/TopWords'
 
 # Read params
 class Parser
@@ -30,9 +30,13 @@ class Parser
   end
 
   def parse_and_run_task
-    find_all_bad_words if arguments_for_top_bad_words_present?
-    find_favourite_battlers_words if arguments_for_top_words_present?
-    find_favourite_battlers_words if arguments_for_name_present? && !arguments_for_top_words_present?
+    if arguments_for_top_bad_words_present?
+      find_all_bad_words
+    elsif arguments_for_top_words_present?
+      find_favourite_battlers_words
+    else
+      show_error
+    end
   end
 
   def arguments_for_top_bad_words_present?
@@ -40,19 +44,23 @@ class Parser
   end
 
   def arguments_for_top_words_present?
-    args['--top-words']
-  end
-
-  def arguments_for_name_present?
     args['--name']
   end
 
+  def number_of_bad_words
+    args['--top-bad-words'].to_i
+  end
+
+  def member_name
+    args['--name'].to_s
+  end
+
   def find_all_bad_words
-    TopBadWords.new.foul_language(args['--top-bad-words'].to_i)
+    TopBadWords.new(number_of_bad_words).print_top
   end
 
   def find_favourite_battlers_words
-    TopWords.new(args['--name'].to_s, args['--top-words']).favourite_words
+    TopWords.new(member_name, args['--top-words']).favourite_words
   end
 end
 
